@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  danger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby 2.6
+        uses: actions/setup-ruby@v1
+      - name: Install bundler
+        run: |
+          gem install bundler
+          bundle install
+      - name: Setup PHP
+        uses: shivammathur/setup-php@2.1.3
+        with:
+          php-version: 7.4
+      - name: Install Dependencies
+        run: composer require squizlabs/php_codesniffer -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+      - name: Execute danger
+        run: |
+          bundle exec danger
